@@ -48,15 +48,23 @@ import matplotlib.pyplot as plt
 def addOnes(A):
     return np.hstack((np.ones((A.shape[0], 1)), A))
 
+def genTrainingData(data_size):
+    X = np.linspace(0.0, 20.0, data_size).reshape((data_size, 1))
+    T = 0.2 + 0.05 * X + 0.4 * np.sin(X) + 0.05 * np.random.normal(size = (data_size, 1))
+    return X, T
+
+def genTestData(X):
+    X_t = X + 0.1 * np.random.normal(size = (X.size, 1))
+    T_t = 0.2 + 0.05 * X + 0.4 * np.sin(X_t) + 0.1 * np.random.normal(size = (X.size, 1))
+    return X_t, T_t
+
 
 def nnet(data_size, num_reps, hidden_units):
     # Make some training data
-    X = np.linspace(0.0, 20.0, data_size).reshape((data_size, 1))
-    T = 0.2 + 0.05 * X + 0.4 * np.sin(X) + 0.05 * np.random.normal(size = (data_size, 1))
+    X, T = genTrainingData(data_size)
     
-    # Make some testing data
-    Xtest = X + 0.1 * np.random.normal(size = (data_size, 1))
-    Ttest = 0.2 + 0.05 * X + 0.4 * np.sin(Xtest) + 0.1 * np.random.normal(size = (data_size, 1))
+    # Make some test data
+    X_test, T_test = genTestData(X)
     
     nSamples = X.shape[0]
     nOutputs = T.shape[1]
@@ -73,7 +81,7 @@ def nnet(data_size, num_reps, hidden_units):
 
 
     X1 = addOnes(X)
-    Xtest1 = addOnes(Xtest)
+    X_test1 = addOnes(X_test)
     
     # Collect training and testing errors for plotting
     errorTrace = np.zeros((num_reps, 2))
@@ -99,8 +107,8 @@ def nnet(data_size, num_reps, hidden_units):
 
         # error traces for plotting
         errorTrace[reps, 0] = sqrt(np.mean((error**2).flat))
-        Ytest = np.dot(addOnes(np.tanh(np.dot(Xtest1, V))), W)
-        errorTrace[reps, 1] = sqrt(np.mean(((Ytest - Ttest)**2).flat))
+        Ytest = np.dot(addOnes(np.tanh(np.dot(X_test1, V))), W)
+        errorTrace[reps, 1] = sqrt(np.mean(((Ytest - T_test)**2).flat))
         
         # Every so often update the graphs
         if reps & 1023 == 0:
@@ -111,7 +119,7 @@ def nnet(data_size, num_reps, hidden_units):
             plt.plot(np.arange(num_reps), errorTrace)
             
             plt.subplot(3, 1, 2)
-            plt.plot(X, T, 'o-', Xtest, Ttest, 'o-', Xtest, Ytest, 'o-')
+            plt.plot(X, T, 'o-', X_test, T_test, 'o-', X_test, Ytest, 'o-')
             plt.legend(('Training', 'Testing', 'Model'), 'lower right')
             
             plt.subplot(3, 1, 3)
