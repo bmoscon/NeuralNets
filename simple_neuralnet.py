@@ -1,3 +1,4 @@
+#!/usr/bin/python
 '''
 Copyright (C) 2010-2013  Bryant Moscon - bmoscon@gmail.com
  
@@ -43,12 +44,12 @@ from math import sqrt
 import matplotlib.pyplot as plt
 
 
-# Add constant column of 1's
+# Add column of 1's
 def addOnes(A):
-    return np.hstack((np.ones((A.shape[0],1)),A))
+    return np.hstack((np.ones((A.shape[0], 1)), A))
 
 
-def nnet(data_size, num_reps):
+def nnet(data_size, num_reps, hidden_units):
     # Make some training data
     X = np.linspace(0.0, 20.0, data_size).reshape((data_size, 1))
     T = 0.2 + 0.05 * X + 0.4 * np.sin(X) + 0.05 * np.random.normal(size = (data_size, 1))
@@ -61,15 +62,14 @@ def nnet(data_size, num_reps):
     nOutputs = T.shape[1]
     
     # Set parameters of neural network
-    nHiddens = 20
     rhoh = .9
     rhoo = .1
     rh = rhoh / (nSamples * nOutputs)
     ro = rhoo / (nSamples * nOutputs)
     
     # Initialize weights to uniformly distributed values
-    V = 0.1 * 2 *(np.random.uniform(size = (1 + 1,nHiddens)) - 0.5)
-    W = 0.1 * 2 *(np.random.uniform(size = (1 + nHiddens, nOutputs)) - 0.5)
+    V = 0.1 * 2 *(np.random.uniform(size = (1 + 1, hidden_units)) - 0.5)
+    W = 0.1 * 2 *(np.random.uniform(size = (1 + hidden_units, nOutputs)) - 0.5)
 
 
     X1 = addOnes(X)
@@ -121,4 +121,4 @@ def nnet(data_size, num_reps):
 
 
 if __name__ == "__main__":
-    nnet(100, 100000)
+    nnet(100, 100000, 10)
