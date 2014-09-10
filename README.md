@@ -8,7 +8,7 @@ The first thing I've posted is a feed-forward backpropagating network.
 
 Error backpropagation is used to make small changes to the weights, according to the following formula:
 
-!["backpropagation equation"](http://bit.ly/17T6Xau)
+!["backpropagation equation"](http://moscon.org/img/equation.png)
 
 
 This very simple script shows the outputs of the neural network as it attempts to find the equation used to generate the test/trainig data. The graph updates itself every 1000 iterations or so, so you can watch as the equation is fit by the network. 
